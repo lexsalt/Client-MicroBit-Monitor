@@ -3,6 +3,16 @@ import React, { useState, useEffect } from "react";
 import { socket } from "./socket";
 import "./App.css";
 
+let pitchArray = [];
+let rollArray = [];
+let yawArray = [];
+let accelXArray = [];
+let accelYArray = [];
+let accelZArray = [];
+let tempArray = [];
+let lightArray = [];
+let soundArray = [];
+
 export default function Game() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [pitch, setPitch] = useState(0);
@@ -20,6 +30,7 @@ export default function Game() {
   const [buttonLogoTouch, setButtonLogoTouch] = useState(false);
   const [buttonLogoPressed, setButtonLogoPressed] = useState(false);
   const [onShake, setOnShake] = useState(false);
+  let sampleSize = 10;
 
   useEffect(() => {
     const interval = setInterval(() => {}, 800);
@@ -29,7 +40,7 @@ export default function Game() {
   function processData(data) {
     let checkData = Number(data);
     if (checkNum(checkData)) {
-      console.log(data);
+      // console.log(data);
     } else {
       if (data.indexOf("p") === 0) {
         // console.log(typeof(data))
@@ -42,9 +53,10 @@ export default function Game() {
           // console.log(str)
           // console.log(arr)
           if (!checkNum(num)) {
-            console.log(num);
+            // console.log(num);
           } else if (checkNum(num)) {
-            setPitch(num);
+            arrayPushValues(num, pitchArray, sampleSize);
+            setPitch(mostFrequent(pitchArray, pitchArray.length));
           }
         } else {
           console.log("Not a valid Pitch");
@@ -61,9 +73,10 @@ export default function Game() {
           // console.log(str)
           // console.log(arr)
           if (!checkNum(num)) {
-            console.log(num);
+            // console.log(num);
           } else if (checkNum(num)) {
-            setRoll(num);
+            arrayPushValues(num, rollArray, sampleSize);
+            setRoll(mostFrequent(rollArray, rollArray.length));
           }
         } else {
           console.log("Not a valid Roll");
@@ -78,9 +91,10 @@ export default function Game() {
           // console.log(str)
           // console.log(arr)
           if (!checkNum(num)) {
-            console.log(num);
+            // console.log(num);
           } else if (checkNum(num)) {
-            setYaw(num);
+            arrayPushValues(num, yawArray, sampleSize);
+            setYaw(mostFrequent(yawArray, yawArray.length));
           }
         } else {
           console.log("Not a valid Pitch");
@@ -95,9 +109,10 @@ export default function Game() {
           // console.log(str)
           // console.log(arr)
           if (!checkNum(num)) {
-            console.log(num);
+            // console.log(num);
           } else if (checkNum(num)) {
-            setAccelX(num);
+            arrayPushValues(num, accelXArray, sampleSize);
+            setAccelX(mostFrequent(accelXArray, accelXArray.length));
           }
         } else {
           console.log("Not a valid accelX");
@@ -112,9 +127,10 @@ export default function Game() {
           // console.log(str)
           // console.log(arr)
           if (!checkNum(num)) {
-            console.log(num);
+            // console.log(num);
           } else if (checkNum(num)) {
-            setAccelY(num);
+            arrayPushValues(num, accelYArray, sampleSize);
+            setAccelY(mostFrequent(accelYArray, accelYArray.length));
           }
         } else {
           console.log("Not a valid AccelY");
@@ -129,9 +145,10 @@ export default function Game() {
           // console.log(str)
           // console.log(arr)
           if (!checkNum(num)) {
-            console.log(num);
+            // console.log(num);
           } else if (checkNum(num)) {
-            setAccelZ(num);
+            arrayPushValues(num, accelZArray, sampleSize);
+            setAccelZ(mostFrequent(accelZArray, accelZArray.length));
           }
         } else {
           console.log("Not a valid AccelZ");
@@ -146,9 +163,10 @@ export default function Game() {
           // console.log(str)
           // console.log(arr)
           if (!checkNum(num)) {
-            console.log(num);
+            // console.log(num);
           } else if (checkNum(num)) {
-            setTemp(num);
+            arrayPushValues(num, tempArray, sampleSize);
+            setTemp(mostFrequent(tempArray, tempArray.length));
           }
         } else {
           console.log("Not a valid Temp");
@@ -163,9 +181,10 @@ export default function Game() {
           // console.log(str)
           // console.log(arr)
           if (!checkNum(num)) {
-            console.log(num);
+            // console.log(num);
           } else if (checkNum(num)) {
-            setLightLevel(num);
+            arrayPushValues(num, lightArray, sampleSize);
+            setLightLevel(mostFrequent(lightArray, lightArray.length));
           }
         } else {
           console.log("Not a valid lightLevel");
@@ -180,9 +199,10 @@ export default function Game() {
           // console.log(str)
           // console.log(arr)
           if (!checkNum(num)) {
-            console.log(num);
+            // console.log(num);
           } else if (checkNum(num)) {
-            setSoundLevel(num);
+            arrayPushValues(num, soundArray, 10);
+            setSoundLevel(mostFrequent(soundArray, soundArray.length));
           }
         } else {
           console.log("Not a valid soundLevel");
@@ -190,31 +210,31 @@ export default function Game() {
       } else if (data.indexOf("a") === 0) {
         setButtonA(true);
         setTimeout(() => {
-          console.log("Delayed for 0.5 second.");
+          // console.log("Delayed for 0.5 second.");
           setButtonA(false);
         }, "500");
       } else if (data.indexOf("b") === 0) {
         setButtonB(true);
         setTimeout(() => {
-          console.log("Delayed for 0.5 second.");
+          // console.log("Delayed for 0.5 second.");
           setButtonB(false);
         }, "500");
       } else if (data.indexOf("d") === 0) {
         setButtonAB(true);
         setTimeout(() => {
-          console.log("Delayed for 0.5 second.");
+          // console.log("Delayed for 0.5 second.");
           setButtonAB(false);
         }, "500");
       } else if (data.indexOf("l") === 0) {
         setButtonLogoTouch(true);
         setTimeout(() => {
-          console.log("Delayed for 0.5 second.");
+          // console.log("Delayed for 0.5 second.");
           setButtonLogoTouch(false);
         }, "500");
       } else if (data.indexOf("s") === 0) {
         setOnShake(true);
         setTimeout(() => {
-          console.log("Delayed for 0.5 second.");
+          // console.log("Delayed for 0.5 second.");
           setOnShake(false);
         }, "500");
       }
@@ -225,6 +245,30 @@ export default function Game() {
       return false;
     }
     return true;
+  }
+  function arrayPushValues(num, arr, sample) {
+    if (arr.length > sample) {
+      arr.pop();
+      arr.unshift(num);
+    } else {
+      arr.unshift(num);
+    }
+    // console.log(arr)
+  }
+  function mostFrequent(arr, n) {
+    let maxcount = 0;
+    let element_having_max_freq;
+    for (let i = 0; i < n; i++) {
+      let count = 0;
+      for (let j = 0; j < n; j++) {
+        if (arr[i] === arr[j]) count++;
+      }
+      if (count > maxcount) {
+        maxcount = count;
+        element_having_max_freq = arr[i];
+      }
+    }
+    return element_having_max_freq;
   }
 
   useEffect(() => {
